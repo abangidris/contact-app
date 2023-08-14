@@ -14,21 +14,36 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $html = "
+    <h1>Contact App</h1>
+    <div>
+        <a href='" . route('admin.contacts.index') . "'>All contacts</>
+        <a href='" . route('admin.contacts.create') . "'>Add contacts</>
+        <a href='" . route('admin.contacts.show', 1) . "'>Show contacts</>
+    </div>
+    ";
+    return $html;
+    // return view('welcome');
 });
-Route::get('/contact', function(){
-    return view('<h1>Daftar Kontak</h1>');
-});
-Route::get('/contact/create', function(){
-    return view('<h1>Tambah Kontak Baru</h1>');
-});
-Route::get('/contacts/{id}', function($id) {
-   return "Ini Kontak ke-" . $id;
-});
-Route::get('/companies/{name?}', function($name=null) {
-   if($name) {
-       return "Nama Perusahaan: " . $name;
-   } else {
-       return "Nama Perusahaan Kosong";
-   }
+
+Route::prefix('admin')->name('admin.')->group(function() {
+    Route::get('/contacts', function() {
+        return "<h1>Daftar Kontak</h1>";
+    })->name('contacts.index');
+    
+    Route::get('/contacts/create', function() {
+        return "<h1>Tambah Kontak Baru</h1>";
+    })->name('contacts.create');
+    
+    Route::get('/contacts/{id}', function($id) {
+        return "Ini Kontak ke-" . $id;
+    })->whereNumber('id')->name('contacts.show');
+    
+    Route::get('/companies/{name?}', function($name=null) {
+        if($name) {
+            return "Nama Perusahaan: " . $name;
+        } else {
+            return "Nama Perusahaan Kosong";
+        }
+    })->whereAlphaNumeric('name')->name('companies');
 });
